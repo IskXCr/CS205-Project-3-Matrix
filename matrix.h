@@ -6,6 +6,7 @@
 /* Header files */
 
 #include <stddef.h>
+#include <stdio.h>
 
 /* Struct and enum declarations */
 
@@ -31,12 +32,13 @@ typedef struct matrix_struct
 
 typedef enum matrix_errno
 {
-    COMPLETED,         /* The whole operation completed successfully. */
+    COMPLETED = 1,     /* The whole operation completed successfully. */
     OUT_OF_MEMORY,     /* Out of memory upon operations */
     OP_NULL_PTR,       /* Null pointer in required operands */
     OP_INVALID,        /* Empty operand */
     OP_UNMATCHED_SIZE, /* Unmatched size of operands */
     OP_EXCEEDED_SIZE,  /* Size exceeded on requirement */
+    UNIMPLEMENTED      /* Unimplemented operation */
 } matrix_errno;
 
 /* Function prototypes */
@@ -45,28 +47,34 @@ matrix create_matrix(const size_t rows, const size_t cols);
 
 void delete_matrix(matrix *m);
 
-int copy_matrix(matrix *dest, const matrix src);
+matrix_errno copy_matrix(matrix *dest, const matrix src);
 
 matrix ref_matrix(const matrix m);
 
-int add_matrix(const matrix addend1, const matrix addend2, matrix *result);
+int test_equality(const matrix op1, const matrix op2, float ERR);
 
-int subtract_matrix(const matrix subtrahend, const matrix subtractor, matrix *result);
+matrix_errno transpose_matrix(const matrix src, matrix *result);
 
-int add_scalar(const matrix src, matrix *result, float val);
+matrix_errno add_matrix(const matrix addend1, const matrix addend2, matrix *result);
 
-int subtract_scalar(const matrix src, matrix *result, float val);
+matrix_errno subtract_matrix(const matrix subtrahend, const matrix subtractor, matrix *result);
 
-int multiply_scalar(const matrix src, matrix *result, float val);
+matrix_errno multiply_matrix(const matrix op1, const matrix op2, matrix *result);
 
-int multiply_matrix(matrix op1, const matrix op2, matrix *result);
+matrix_errno add_scalar(const matrix src, matrix *result, float val);
+
+matrix_errno subtract_scalar(const matrix src, matrix *result, float val);
+
+matrix_errno multiply_scalar(const matrix src, matrix *result, float val);
 
 float matrix_max(const matrix src);
 
 float matrix_min(const matrix src);
 
-int read_matrix(char *s, matrix *result);
+matrix_errno read_matrix_from_string(char *s, matrix *result);
 
-int print_matrix(const matrix src);
+matrix_errno read_matrix_from_stream(FILE *p, matrix *result);
+
+matrix_errno print_matrix(FILE *p, const matrix src);
 
 #endif
