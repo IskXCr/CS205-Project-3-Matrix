@@ -55,7 +55,8 @@ int main()
     return 0;
 }
 
-/* Get the difference between two time. */
+/* Get the difference between two time.
+   Reference: https://stackoverflow.com/questions/6749621/how-to-create-a-high-resolution-timer-in-linux-to-measure-program-performance */
 struct timespec diff(struct timespec start, struct timespec end)
 {
     struct timespec temp;

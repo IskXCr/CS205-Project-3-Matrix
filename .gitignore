@@ -11,3 +11,4 @@ CTestTestfile.cmake
 _deps
 test
 __matrix_lib_test.1
+.vscode
