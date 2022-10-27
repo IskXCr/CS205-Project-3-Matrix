@@ -405,18 +405,28 @@ void test_matrix_mul_and_transpose(void)
 
 void test_matrix_mul_performance(void)
 {
-    print_test_init("Matrix multiplication performance test");
+    print_test_init("Randomized matrix multiplication performance test");
 
-    FILE *p = fopen("__matrix_lib_test.2", "r+");
     matrix op1 = NULL, op2 = NULL, op3 = NULL;
     matrix_errno err;
-    assert((err = read_matrix_from_stream(p, &op1)) == COMPLETED);
-    assert((err = read_matrix_from_stream(p, &op2)) == COMPLETED);
+
+    int sz = 2048;
+    assert((op1 = create_matrix(sz, sz)) != NULL);
+    assert((op2 = create_matrix(sz, sz)) != NULL);
+
+    srand(189231273); // Pick a whatever value
+    for (int i = 0; i < sz; ++i)
+        for (int j = 0; j < sz; ++j)
+        {
+            op1->arr[i * sz + j] = (float)rand();
+            op2->arr[i * sz + j] = (float)rand();
+        }
+
     assert((err = multiply_matrix(op1, op2, &op3)) == COMPLETED);
 
     delete_matrix(&op1);
     delete_matrix(&op2);
     delete_matrix(&op3);
 
-    print_test_end("Matrix multiplication performance test");
+    print_test_end("Randomized matrix multiplication performance test");
 }

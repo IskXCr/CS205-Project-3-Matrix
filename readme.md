@@ -4,6 +4,12 @@
 
 **SID**: 12110804
 
+## Part 0 - Link
+[IskXCr/CS205-Project-3-Matrix](https://github.com/IskXCr/CS205-Project-3-Matrix)
+
+In the uploaded version, __matrix_lib_test.2 is removed and a random matrix generator is replaced. The seed is set to a
+specific value to control the variables on performance test.
+
 ## Part 1 - Analysis
 
 The problem asks us to design a matrix library written in pure `C`. We are asked to design the functions to be *as safe as possible and be easy to use*. 
@@ -355,7 +361,7 @@ matrix_errno print_matrix(FILE *p, const matrix src);
 
    Transpose one of the operands first to gain linear access. The intermediate result is also written in a linear way, and transposed later as the real result.
 
-   **Test Matrix**: ``__matrix_lib_test.2``. Please see the attached file. Size ``2048 * 2048``.
+   **Test Matrix**: Size ``2048 * 2048``. A random generator with a constant seed is used.
 
    **Test Platform**: ``R7-5800H @3.20 GHz, 8C/16T``, ``DDR4-3200 Dual Channel``, ``Windows 10 for Workstation, version 22621.521`` 
 
