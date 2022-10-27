@@ -10,3 +10,4 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 test
+__matrix_lib_test.1

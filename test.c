@@ -28,6 +28,7 @@ void test_emma_on_matrices(void);
 void test_emma_on_matrix_and_scalar(void);
 void test_min_max(void);
 void test_matrix_mul_and_transpose(void);
+void test_matrix_mul_performance(void);
 
 void (*test_funcs[])(void) = {&test_matrix_struct,
                               &test_matrix_read,
@@ -35,7 +36,8 @@ void (*test_funcs[])(void) = {&test_matrix_struct,
                               &test_emma_on_matrices,
                               &test_emma_on_matrix_and_scalar,
                               &test_min_max,
-                              &test_matrix_mul_and_transpose};
+                              &test_matrix_mul_and_transpose,
+                              &test_matrix_mul_performance};
 
 int main()
 {
@@ -197,7 +199,7 @@ void test_matrix_write(void)
     int q = 0;
     float c;
     size_t m, n;
-    fscanf(p, "%zu %zu", &m, &n);
+    assert(fscanf(p, "%zu %zu", &m, &n) == 2);
     assert(m == tmp->rows && n == tmp->cols);
     while (q < 72 && fscanf(p, "%f", &c) > 0)
         assert(fabsf(c - tmp->arr[q++]) <= FLOAT_ERR);
@@ -375,4 +377,22 @@ void test_matrix_mul_and_transpose(void)
     printf("muliplcation test ok.\n");
 
     print_test_end("Matrix multiplication test");
+}
+
+void test_matrix_mul_performance(void)
+{
+    print_test_init("Matrix multiplication performance test");
+
+    FILE *p = fopen("__matrix_lib_test.2", "r+");
+    matrix op1 = NULL, op2 = NULL, op3 = NULL;
+    matrix_errno err;
+    assert((err = read_matrix_from_stream(p, &op1)) == COMPLETED);
+    assert((err = read_matrix_from_stream(p, &op2)) == COMPLETED);
+    assert((err = multiply_matrix(op1, op2, &op3)) == COMPLETED);
+
+    delete_matrix(&op1);
+    delete_matrix(&op2);
+    delete_matrix(&op3);
+
+    print_test_end("Matrix multiplication performance test");
 }

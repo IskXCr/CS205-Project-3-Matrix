@@ -163,7 +163,7 @@ matrix ref_matrix(const matrix m)
 /* Return 1 if two matrix are equal, or both NULL, with error less than or equals to ERR. ERR must be positive. */
 int test_equality(const matrix op1, const matrix op2, float ERR)
 {
-    if (op1 == NULL && op2 == NULL)
+    if (op1 == op2)
         return 1;
 
     if (op1 == NULL || op2 == NULL || op1->rows != op2->rows || op1->cols != op2->cols)
@@ -565,6 +565,8 @@ matrix_errno read_matrix_from_string(char *s, matrix *result)
             s += bytes_read;
         }
 
+    if (*result != NULL)
+        delete_matrix(result);
     *result = tmp;
 
     return COMPLETED;
@@ -588,7 +590,9 @@ matrix_errno read_matrix_from_stream(FILE *p, matrix *result)
     size_t m, n;
     matrix tmp; /* Store the result matrix. */
 
-    fscanf(p, "%zu %zu", &m, &n);
+    if (fscanf(p, "%zu %zu", &m, &n) != 2)
+        return OP_INVALID;
+
     if ((tmp = create_matrix(m, n)) == NULL)
     {
         out_of_memory();
@@ -597,8 +601,14 @@ matrix_errno read_matrix_from_stream(FILE *p, matrix *result)
 
     for (size_t i = 0; i < m; ++i)
         for (size_t j = 0; j < n; ++j)
-            fscanf(p, "%f", tmp->arr + i * n + j);
+            if (fscanf(p, "%f", tmp->arr + i * n + j) <= 0)
+            {
+                delete_matrix(&tmp);
+                return OP_INVALID;
+            }
 
+    if (*result != NULL)
+        delete_matrix(result);
     *result = tmp;
 
     return COMPLETED;

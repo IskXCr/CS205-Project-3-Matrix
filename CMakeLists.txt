@@ -5,6 +5,10 @@ project(Project_3_Matrix)
 
 aux_source_directory(./ DIR_SRCS)
 
+find_package(OpenMP REQUIRED)
+
+add_compile_options(-O3)
 
 # add the executable
 add_executable(test ${DIR_SRCS})
+target_link_libraries(test PRIVATE OpenMP::OpenMP_C)
