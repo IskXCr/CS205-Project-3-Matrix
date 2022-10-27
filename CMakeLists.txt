@@ -5,6 +5,8 @@ project(Project_3_Matrix)
 
 aux_source_directory(./ DIR_SRCS)
 
+list(REMOVE_ITEM DIR_SRCS "matrix_gen.c")
+
 find_package(OpenMP REQUIRED)
 
 add_compile_options(-O3)

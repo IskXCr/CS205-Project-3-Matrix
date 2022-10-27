@@ -18,6 +18,8 @@ static const size_t SZT_MAX = (size_t)-1;
 
 /* Function prototypes */
 
+struct timespec diff(struct timespec start, struct timespec end);
+
 void print_test_init(const char *s);
 void print_test_end(const char *s);
 
@@ -41,12 +43,33 @@ void (*test_funcs[])(void) = {&test_matrix_struct,
 
 int main()
 {
-    clock_t clock3 = clock();
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
+
     size_t test_sz = sizeof(test_funcs) / sizeof(void (*)(void));
     for (size_t i = 0; i < test_sz; ++i)
         (*test_funcs[i])();
-    printf("Evaluation result: all tests passed.\nTime elapsed: %ld ms\n", (clock() - clock3) * 1000 / CLOCKS_PER_SEC);
+
+    clock_gettime(CLOCK_REALTIME, &end);
+    printf("Evaluation result: all tests passed.\nTime elapsed: %ld unit\n", diff(start, end).tv_nsec / 1000000L);
     return 0;
+}
+
+/* Get the difference between two time. */
+struct timespec diff(struct timespec start, struct timespec end)
+{
+    struct timespec temp;
+    if ((end.tv_nsec - start.tv_nsec) < 0)
+    {
+        temp.tv_sec = end.tv_sec - start.tv_sec - 1;
+        temp.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
+    }
+    else
+    {
+        temp.tv_sec = end.tv_sec - start.tv_sec;
+        temp.tv_nsec = end.tv_nsec - start.tv_nsec;
+    }
+    return temp;
 }
 
 void print_test_init(const char *s)

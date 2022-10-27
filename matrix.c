@@ -397,8 +397,10 @@ matrix_errno multiply_matrix(const matrix op1, const matrix op2, matrix *result)
 
     // todo: parallel optimization
     // implemented: transposed matrices (trans2, result) for faster access speed, loop designed to access elements linearly
+#pragma omp parallel for
     for (size_t k = 0; k < op2->cols; ++k)
     {
+#pragma omp parallel for
         for (size_t m = 0; m < op1->rows; ++m)
         {
             float result0 = 0;
@@ -410,7 +412,7 @@ matrix_errno multiply_matrix(const matrix op1, const matrix op2, matrix *result)
         }
     }
 
-    /* Clean up*/
+    /* Clean up */
     delete_matrix(&trans2);
     (*result)->rows = r_cols;
     (*result)->cols = r_rows;
